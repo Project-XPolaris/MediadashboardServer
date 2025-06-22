@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: mediadashboard_server
+    ports:
+      - "8802:8802"
+    volumes:
+      - ./config_dev.yml:/app/config.yml
+    depends_on:
+      - db
+    networks:
+      - mediadashboard-net
+
+  db:
+    image: mysql:8.0
+    container_name: mediadashboard_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mediadashboard-dev
+    ports:
+      # For debugging, you can expose the database port to the host
+      - "3806:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mediadashboard-net
+
+networks:
+  mediadashboard-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local 
