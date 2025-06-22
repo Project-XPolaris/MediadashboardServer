@@ -1,0 +1,61 @@
+addr: ':8802'
+application: "Media Dashboard Service"
+instance: "main"
+service:
+  name: "MediaDashboardService"
+  display: "Media Dashboard Service"
+datasource:
+  mysql:
+    type: mysql
+    host: "localhost"
+    port: 3306
+    username: "your_mysql_username"
+    password: "your_mysql_password"
+    database: "mediadashboard"
+youplus:
+  auth: false
+  enablepath: false
+  url: 'http://localhost:8999'
+  rpc: 'localhost:50055'
+  entity:
+    enable: false
+    name: "mediadashboard"
+    version: 1
+log:
+  youlog:
+    application: "YouPhoto"
+    instance: "main"
+    engine:
+      local:
+        type: logrus
+auth:
+  youauth:
+    enable: true
+    type: youauth
+    url: "http://your_youauth_instance:8610"
+    appid: "your_youauth_app_id"
+    secret: "your_youauth_app_secret"
+  anonymous:
+    type: anonymous
+    enable: false
+  youauthwithpassword:
+    type: youauthwithpassword
+    enable: true
+
+proxy:
+  photo:
+    target: "http://your_photo_service_host:port"
+    prefix: "/api/photo"
+    name: "photo"
+  video:
+    target: "http://your_video_service_host:port"
+    prefix: "/api/video"
+    name: "video"
+  comic:
+    target: "http://your_comic_service_host:port"
+    prefix: "/api/comic"
+    name: "comic"
+  music:
+    target: "http://your_music_service_host:port"
+    prefix: "/api/music"
+    name: "music" 

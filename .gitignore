@@ -1,0 +1,6 @@
+./.idea
+./database.db
+dist
+
+.vscode
+token.db
