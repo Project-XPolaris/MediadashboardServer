@@ -27,4 +27,4 @@ COPY --from=builder /app/server .
 EXPOSE 8802
 
 # Command to run the application
-CMD ["/app/server"] 
+CMD ["/app/server","run"] 
