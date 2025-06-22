@@ -22,7 +22,6 @@ WORKDIR /app
 
 # Copy the binary from the builder stage
 COPY --from=builder /app/server .
-COPY --from=builder /app/config.yml .
 
 # Expose port 8802
 EXPOSE 8802
