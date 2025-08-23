@@ -26,6 +26,18 @@ func RegisterServiceProxyHandler(e *haruka.Engine) {
 
 func RegisterProxy(e *haruka.Engine, p *config.ProxyConfig) {
 	e.Router.Prefix(p.Prefix, func(c *haruka.Context) {
+		// Inject auth header for video link requests where token is in path
+		if p.Name == "video" && strings.HasPrefix(c.Request.URL.Path, p.Prefix+"/link/") {
+			rest := strings.TrimPrefix(c.Request.URL.Path, p.Prefix+"/link/")
+			segs := strings.Split(rest, "/")
+			if len(segs) >= 3 {
+				token := segs[2]
+				if token != "" {
+					c.Request.Header.Set("Authorization", "Bearer "+token)
+				}
+			}
+		}
+
 		target, err := url.Parse(p.Target)
 		if err != nil {
 			AbortError(c, err, http.StatusInternalServerError)
@@ -44,6 +56,18 @@ func RegisterProxy(e *haruka.Engine, p *config.ProxyConfig) {
 // RegisterNacosProxy 在请求时通过 Nacos 选择健康实例并转发
 func RegisterNacosProxy(e *haruka.Engine, p *config.ProxyConfig) {
 	e.Router.Prefix(p.Prefix, func(c *haruka.Context) {
+		// Inject auth header for video link requests where token is in path
+		if p.Name == "video" && strings.HasPrefix(c.Request.URL.Path, p.Prefix+"/link/") {
+			rest := strings.TrimPrefix(c.Request.URL.Path, p.Prefix+"/link/")
+			segs := strings.Split(rest, "/")
+			if len(segs) >= 3 {
+				token := segs[2]
+				if token != "" {
+					c.Request.Header.Set("Authorization", "Bearer "+token)
+				}
+			}
+		}
+
 		targetStr := discoverFromNacos(p)
 		if targetStr == "" {
 			AbortError(c, fmt.Errorf("nacos discovery failed for %s", p.ServiceName), http.StatusBadGateway)

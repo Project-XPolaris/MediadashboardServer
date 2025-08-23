@@ -1,8 +1,10 @@
 package httpapi
 
 import (
+	"mediadashboard/config"
 	"mediadashboard/module"
 	"net/http"
+	"strings"
 
 	"github.com/allentom/haruka"
 	"github.com/allentom/haruka/middleware"
@@ -34,6 +36,17 @@ func GetEngine() *haruka.Engine {
 				return false
 			}
 		}
+		// Special case for video link: token is in URL path. Extract and set Authorization header so auth middleware validates it.
+		if vp := getVideoPrefix(); vp != "" && strings.HasPrefix(c.Request.URL.Path, vp+"/link/") {
+			rest := strings.TrimPrefix(c.Request.URL.Path, vp+"/link/")
+			segs := strings.Split(rest, "/")
+			if len(segs) >= 3 {
+				token := segs[2]
+				if token != "" {
+					c.Request.Header.Set("Authorization", "Bearer "+token)
+				}
+			}
+		}
 		return true
 	}
 	e.UseMiddleware(module.Auth.AuthMiddleware)
@@ -58,4 +71,14 @@ func GetEngine() *haruka.Engine {
 
 	InitErrorHandler()
 	return e
+}
+
+// getVideoPrefix returns the configured prefix for the video service
+func getVideoPrefix() string {
+	for _, p := range config.Instance.ServiceProxy {
+		if p != nil && p.Name == "video" {
+			return p.Prefix
+		}
+	}
+	return ""
 }
