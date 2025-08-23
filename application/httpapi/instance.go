@@ -52,6 +52,7 @@ func GetEngine() *haruka.Engine {
 	})
 	RegisterServiceProxyHandler(e)
 	e.Router.GET("/api/service/list", GetServiceListProxyHandler)
+	e.Router.GET("/api/service/{name}", GetServiceDetailProxyHandler)
 	// Add UI handler
 	ServeUIHandler(e)
 

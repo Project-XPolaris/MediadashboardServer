@@ -88,3 +88,17 @@ var GetServiceListProxyHandler = func(c *haruka.Context) {
 		"data":    config.Instance.ServiceProxy,
 	})
 }
+
+var GetServiceDetailProxyHandler = func(c *haruka.Context) {
+	name := c.GetPathParameterAsString("name")
+	for _, svc := range config.Instance.ServiceProxy {
+		if svc.Name == name {
+			c.JSON(haruka.JSON{
+				"success": true,
+				"data":    svc,
+			})
+			return
+		}
+	}
+	AbortError(c, fmt.Errorf("service not found: %s", name), http.StatusNotFound)
+}
