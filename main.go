@@ -12,6 +12,7 @@ import (
 	"github.com/allentom/haruka"
 	"github.com/allentom/harukap"
 	"github.com/allentom/harukap/cli"
+	"github.com/allentom/harukap/plugins/nacos"
 	"github.com/sirupsen/logrus"
 )
 
@@ -29,6 +30,15 @@ func main() {
 	appEngine.LoggerPlugin = plugins.DefaultYouLogPlugin
 	appEngine.UsePlugin(youplus.DefaultYouPlusPlugin)
 	appEngine.UsePlugin(database.DefaultPlugin)
+
+	// 初始化 Nacos 插件（从 yml 读取配置）
+	nacosPlugin, err := nacos.NewNacosPluginFromYAML(appEngine.ConfigProvider, appEngine.ConfigProvider.Manager.GetString("application"), 8000)
+	if err != nil {
+		logrus.Warnf("init nacos plugin failed: %v", err)
+	} else {
+		plugins.DefaultNacosPlugin = nacosPlugin
+		appEngine.UsePlugin(nacosPlugin)
+	}
 	if config.Instance.YouAuthConfig != nil {
 		plugins.CreateYouAuthPlugin()
 		plugins.DefaultYouAuthOauthPlugin.ConfigPrefix = config.Instance.YouAuthConfigPrefix

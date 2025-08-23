@@ -35,9 +35,13 @@ type AuthConfig struct {
 }
 
 type ProxyConfig struct {
-	Target string `json:"target"`
-	Prefix string `json:"prefix"`
-	Name   string `json:"name"`
+	Target      string `json:"target"`
+	Prefix      string `json:"prefix"`
+	Name        string `json:"name"`
+	UseNacos    bool   `json:"useNacos" mapstructure:"useNacos"`
+	ServiceName string `json:"serviceName" mapstructure:"serviceName"`
+	Group       string `json:"group" mapstructure:"group"`
+	Scheme      string `json:"scheme" mapstructure:"scheme"`
 }
 
 type Config struct {
